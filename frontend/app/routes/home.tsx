@@ -102,8 +102,26 @@ export default function Home() {
           </button>
         </div>
       )}
-      <div className="flex flex-col mb-4">
+      <div className="flex flex-col mb-4 relative">
+        {/* スマホ用フローティングボタン */}
+        <button
+          onClick={() => document.querySelector('textarea')?.focus()}
+          className="fixed md:hidden bottom-6 right-6 w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center shadow-lg z-10 text-[1.5em]"
+        >
+          ＋
+        </button>
+
         <textarea
+          ref={(el) => {
+            if (el) {
+              // フォーカス時にスクロールする
+              el.addEventListener('focus', () => {
+                setTimeout(() => {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+              });
+            }
+          }}
           value={newLog}
           onChange={(e) => setNewLog(e.target.value)}
           onKeyDown={(e) => {
