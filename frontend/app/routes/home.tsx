@@ -55,6 +55,25 @@ export default function Home() {
       {/* メインコンテンツ */}
       <div className="flex-1">
       <h1 className="text-2xl font-bold mb-2">tidly</h1>
+      
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {allTags.map(tag => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              className={`px-3 py-1.5 rounded text-sm ${
+                activeTag === tag 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {activeTag && (
         <div className="mb-3 flex items-center">
           <span className="mr-2">Filtering by: {activeTag}</span>
@@ -79,7 +98,7 @@ export default function Home() {
               }
             }
           }}
-          placeholder="Add new log (Cmd+Enter to submit)"
+          placeholder="log it (Cmd+Enter to submit)"
           className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-md px-2 py-1 h-[38px] mr-0"
         />
         <button
@@ -130,27 +149,6 @@ export default function Home() {
       </ul>
       </div>
 
-      {/* 右サイドバー */}
-      <div className="w-48 shrink-0 mt-[52px]">
-        <h2 className="text-lg font-semibold mb-3">Tags</h2>
-        {allTags.length > 0 && (
-          <div className="flex flex-col gap-2">
-            {allTags.map(tag => (
-              <button
-                key={tag}
-                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                className={`px-3 py-1.5 rounded text-sm text-left ${
-                  activeTag === tag 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
-                }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
