@@ -48,7 +48,7 @@ function checkAuthentication(request, env) {
 }
 
 /**
- * カスタムヘッダーを追加
+ * ヘッダーを追加
  */
 function appendHeaders(response, headers) {
   const newResponse = new Response(response.body, response)
