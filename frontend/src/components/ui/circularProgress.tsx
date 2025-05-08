@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface CircularProgressProps {
@@ -25,9 +26,11 @@ export function CircularProgress({
   const circumference = 2 * Math.PI * radius;
   const progress = Math.min(Math.max(value, 0), max);
   const percentage = (progress / max) * 100;
-  const strokeDashoffset = circumference - (circumference * percentage) / 100;
+  
+  const strokeDashoffset = React.useMemo(() => {
+    return circumference - (circumference * percentage) / 100;
+  }, [circumference, percentage]);
 
-  // カラーロジック
   let progressColor = color;
   if (percentage >= errorThreshold) {
     progressColor = "var(--destructive)";
@@ -45,7 +48,6 @@ export function CircularProgress({
         xmlns="http://www.w3.org/2000/svg"
         className="transform -rotate-90"
       >
-        {/* 背景円 */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -54,7 +56,6 @@ export function CircularProgress({
           stroke="var(--border)"
           fill="transparent"
         />
-        {/* 進捗円 */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -65,7 +66,8 @@ export function CircularProgress({
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           fill="transparent"
-          className="transition-all duration-300 ease-in-out"
+          className="transition-[stroke-dashoffset,stroke] duration-200 ease-out"
+          style={{ willChange: "stroke-dashoffset, stroke" }}
         />
       </svg>
       <span

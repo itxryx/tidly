@@ -5,8 +5,6 @@ export default function LogoutPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // 実際の実装では、ここでログアウト処理を行います
-    // このモックでは単純に/loginへリダイレクトします
     setTimeout(() => {
       navigate('/login')
     }, 1000)

@@ -3,11 +3,11 @@ import './App.css'
 import MainLayout from './components/layouts/MainLayout'
 import LoginPage from './pages/LoginPage'
 import LoginCallbackPage from './pages/LoginCallbackPage'
+import LogoutPage from './pages/LogoutPage'
 import TopPage from './pages/TopPage'
 import DashboardPage from './pages/DashboardPage'
 import AboutPage from './pages/AboutPage'
-import PrivacyPage from './pages/PrivacyPage'
-import LogoutPage from './pages/LogoutPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
@@ -17,13 +17,13 @@ function App() {
         {/* 未認証ユーザー向けルート */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/login-callback" element={<LoginCallbackPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         
         {/* 認証済みユーザー向けルート */}
         <Route element={<MainLayout />}>
           <Route path="/top" element={<TopPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
         </Route>
         
         {/* リダイレクト */}

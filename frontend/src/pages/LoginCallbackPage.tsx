@@ -5,8 +5,6 @@ export default function LoginCallbackPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // 実際の実装では、ここでCognitoからの認証情報を処理します
-    // このモックでは単純に/topへリダイレクトします
     setTimeout(() => {
       navigate('/top')
     }, 1000)

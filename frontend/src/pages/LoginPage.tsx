@@ -34,7 +34,7 @@ export default function LoginPage() {
             </li>
             <li>
               <Link 
-                to="/privacy" 
+                to="/privacy-policy" 
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 Privacy Policy

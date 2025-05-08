@@ -24,7 +24,7 @@ export default function RootLayout() {
           <div>© 2025 tidly</div>
           <ul className="flex gap-4">
             <li><Link to="/about">About</Link></li>
-            <li><Link to="/privacy">プライバシーポリシー</Link></li>
+            <li><Link to="/privacy-policy">プライバシーポリシー</Link></li>
           </ul>
         </div>
       </footer>

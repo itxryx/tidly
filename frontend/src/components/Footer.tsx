@@ -16,7 +16,7 @@ export default function Footer() {
           </li>
           <li>
             <Link 
-              to="/privacy" 
+              to="/privacy-policy" 
               className="text-accent-foreground hover:text-primary transition-colors"
             >
               Privacy Policy
