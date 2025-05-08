@@ -2,25 +2,47 @@ import { Link } from 'react-router-dom'
 
 export default function LoginPage() {
   return (
-    <div className="container mx-auto p-8 flex flex-col items-center justify-center min-h-[70vh]">
-      <div className="w-full max-w-md text-center">
-        <div className="mb-8">
-          <h2 className="text-xl mb-2">Welcome to tidly</h2>
-          <p className="text-gray-600">Simple and easy way to organize your thoughts</p>
+    <div className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-md">
+        <div className="bg-card border border-border rounded-lg shadow-lg p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-primary mb-2">tidly</h1>
+            <div className="h-1 w-16 mx-auto bg-accent/50 rounded-full mb-4"></div>
+            <p className="text-muted-foreground">Simple and easy way to organize your thoughts</p>
+          </div>
+          
+          <Link 
+            to="/top" 
+            className="flex justify-center w-full bg-secondary/20 border border-border p-3 rounded-lg hover:bg-secondary/40 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <span className="w-4 h-4"></span>
+              Sign in with Google
+            </span>
+          </Link>
         </div>
-        <Link 
-          to="/top" 
-          className="w-full bg-white border border-gray-300 p-3 rounded-lg shadow-sm hover:shadow"
-        >
-          Sign in with Google
-        </Link>
+        
+        <footer className="mt-8 text-center">
+          <ul className="flex gap-6 justify-center">
+            <li>
+              <Link 
+                to="/about" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/privacy" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </Link>
+            </li>
+          </ul>
+        </footer>
       </div>
-      <footer className="mt-12">
-        <ul className="flex gap-4">
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/privacy">Privacy Policy</Link></li>
-        </ul>
-      </footer>
     </div>
   )
 }
