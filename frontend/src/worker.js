@@ -6,6 +6,23 @@ export default {
       return authResult.response
     }
     
+    const url = new URL(request.url)
+    const isAssetRequest = /\.(css|js|png|jpg|jpeg|svg|ico|json|woff|woff2|ttf|otf)$/.test(url.pathname)
+    
+    // index.htmlへのリクエストを処理
+    if (!isAssetRequest) {
+      const indexRequest = new Request(`${url.origin}/index.html`, request)
+      const response = await env.ASSETS.fetch(indexRequest)
+      
+      const customHeaders = {
+        'X-Robots-Tag': 'noindex, nofollow'
+      }
+      
+      // ヘッダーを追加
+      const newResponse = appendHeaders(response, customHeaders)
+      return newResponse
+    }
+    
     const response = await env.ASSETS.fetch(request)
     
     const customHeaders = {
