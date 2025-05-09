@@ -1,5 +1,9 @@
 export default {
   async fetch(request, env, ctx) {
+    const customHeaders = {
+      'X-Robots-Tag': 'noindex, nofollow'
+    }
+
     // Basic認証を適用
     const authResult = checkAuthentication(request, env)
     if (!authResult.success) {
@@ -7,16 +11,14 @@ export default {
     }
     
     const url = new URL(request.url)
+    // index.htmlまたは静的アセットへのリクエストかを判定
     const isAssetRequest = /\.(css|js|png|jpg|jpeg|svg|ico|json|woff|woff2|ttf|otf)$/.test(url.pathname)
+    const isIndexHtml = url.pathname === '/index.html' || url.pathname === '/'
     
-    // index.htmlへのリクエストを処理
-    if (!isAssetRequest) {
+    // リクエストを処理
+    if (!isAssetRequest && !isIndexHtml) {
       const indexRequest = new Request(`${url.origin}/index.html`, request)
       const response = await env.ASSETS.fetch(indexRequest)
-      
-      const customHeaders = {
-        'X-Robots-Tag': 'noindex, nofollow'
-      }
       
       // ヘッダーを追加
       const newResponse = appendHeaders(response, customHeaders)
@@ -24,10 +26,6 @@ export default {
     }
     
     const response = await env.ASSETS.fetch(request)
-    
-    const customHeaders = {
-      'X-Robots-Tag': 'noindex, nofollow'
-    }
     
     // ヘッダーを追加
     const newResponse = appendHeaders(response, customHeaders)
