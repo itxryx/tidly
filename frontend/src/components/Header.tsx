@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 
 export default function Header() {
   return (
-    <header className="p-4 border-b bg-card shadow-md">
+    <header className="py-3 px-4 border-b bg-card shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="font-bold text-2xl text-primary">tidly</Link>
+        <Link to="/top" className="font-bold text-2xl text-primary">tidly</Link>
         <nav>
           <ul className="flex gap-6 items-center">
             <li>

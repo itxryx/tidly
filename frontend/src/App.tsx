@@ -17,17 +17,21 @@ function App() {
         {/* 未認証ユーザー向けルート */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/login-callback" element={<LoginCallbackPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         
-        {/* 認証済みユーザー向けルート */}
+        {/* MainLayoutを適用するルート */}
         <Route element={<MainLayout />}>
+          {/* 認証済みユーザー向けルート */}
           <Route path="/top" element={<TopPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          
+          {/* 共通ページ */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          
+          {/* リダイレクト */}
+          <Route path="/" element={<Navigate replace to="/top" />} />
         </Route>
         
-        {/* リダイレクト */}
-        <Route path="/" element={<Navigate to="/top" replace />} />
         <Route path="/logout" element={<LogoutPage />} />
         
         {/* 404ページ */}

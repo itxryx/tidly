@@ -12,7 +12,7 @@ export default function LoginPage() {
           </div>
           
           <Link 
-            to="/top" 
+            to="/login-callback" 
             className="flex justify-center w-full bg-secondary/20 border border-border p-3 rounded-lg hover:bg-secondary/40 transition-colors"
           >
             <span className="flex items-center gap-2">

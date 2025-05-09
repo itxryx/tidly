@@ -6,7 +6,7 @@ interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
 }
 
-interface TabListProps extends React.HTMLAttributes<HTMLDivElement> {}
+type TabListProps = React.HTMLAttributes<HTMLDivElement>
 
 interface TabTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value: string

@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 
-export default function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+export default function Footer({ className = '' }: FooterProps) {
   return (
-    <footer className="p-4 border-t bg-card shadow-inner">
+    <footer className={`py-3 px-4 border-t bg-card shadow-inner ${className}`}>
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-muted-foreground">© 2025 tidly</div>
         <ul className="flex gap-6">
