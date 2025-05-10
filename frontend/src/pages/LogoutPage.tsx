@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from 'react-oidc-context'
+import { useAuthContext } from '@/lib/AuthContext'
 
 export default function LogoutPage() {
   const navigate = useNavigate()
-  const auth = useAuth()
+  const { authState, logout } = useAuthContext()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const performLogout = async () => {
       try {
-        if (auth.isAuthenticated) {
-          await auth.removeUser()
-
-          const clientId = String(import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID)
-          const logoutUri = String(import.meta.env.VITE_COGNITO_REDIRECT_SIGNOUT_URL)
-          const cognitoDomain = `https://${String(import.meta.env.VITE_COGNITO_DOMAIN)}`
-          window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+        if (authState.isAuthenticated) {
+          await logout()
         } else {
           setTimeout(() => {
             navigate('/login')
@@ -31,7 +26,7 @@ export default function LogoutPage() {
     }
 
     performLogout()
-  }, [auth, navigate])
+  }, [authState.isAuthenticated, logout, navigate])
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center p-8">

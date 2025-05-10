@@ -1,5 +1,5 @@
 import { Tabs, TabList, TabTrigger, TabContent } from "@/components/ui/tabs"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Post, Board } from "@/types"
 import { PostSection } from "@/components/posts/PostSection"
 import { PostList } from "@/components/posts/PostList"

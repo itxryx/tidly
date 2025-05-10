@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from 'react-oidc-context'
+import { useAuthContext } from '@/lib/AuthContext'
 
 export default function Header() {
-  const auth = useAuth()
-  const userEmail = auth.user?.profile.email || 'Not logged in'
+  const { authState } = useAuthContext()
+  const userEmail = authState.user?.email || 'Not logged in'
+  const isAuthenticated = authState.isAuthenticated
 
   return (
     <header className="py-3 px-4 border-b bg-card shadow-md">
@@ -13,18 +14,29 @@ export default function Header() {
           <ul className="flex gap-6 items-center">
             <li>
               <span className="cursor-default text-muted-foreground flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <div className={`w-2 h-2 rounded-full ${isAuthenticated ? 'bg-primary animate-pulse' : 'bg-destructive'}`}></div>
                 {userEmail}
               </span>
             </li>
-            <li>
-              <Link
-                to="/logout"
-                className="px-3 py-1.5 border border-border rounded hover:bg-accent/30 transition-colors"
-              >
-                Logout
-              </Link>
-            </li>
+            {isAuthenticated ? (
+              <li>
+                <Link
+                  to="/logout"
+                  className="px-3 py-1.5 border border-border rounded hover:bg-accent/30 transition-colors"
+                >
+                  Logout
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  to="/login"
+                  className="px-3 py-1.5 border border-border rounded hover:bg-accent/30 transition-colors"
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

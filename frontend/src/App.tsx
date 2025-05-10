@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import MainLayout from './components/layouts/MainLayout'
+import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import LoginCallbackPage from './pages/LoginCallbackPage'
 import LogoutPage from './pages/LogoutPage'
@@ -15,25 +16,32 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* 未認証ユーザー向けルート */}
-        <Route path="/login" element={<LoginPage />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
         <Route path="/login-callback" element={<LoginCallbackPage />} />
-        
-        {/* MainLayoutを適用するルート */}
+
+        {/* 認証が必要なルート */}
+        <Route element={<ProtectedRoute />}>
+          {/* MainLayoutを適用するルート */}
+          <Route element={<MainLayout />}>
+            {/* 認証済みユーザー向けルート */}
+            <Route path="/top" element={<TopPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* リダイレクト */}
+            <Route path="/" element={<Navigate replace to="/top" />} />
+          </Route>
+        </Route>
+
+        {/* 共通ページ - 認証不要 */}
         <Route element={<MainLayout />}>
-          {/* 認証済みユーザー向けルート */}
-          <Route path="/top" element={<TopPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          
-          {/* 共通ページ */}
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-          
-          {/* リダイレクト */}
-          <Route path="/" element={<Navigate replace to="/top" />} />
         </Route>
-        
+
         <Route path="/logout" element={<LogoutPage />} />
-        
+
         {/* 404ページ */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
