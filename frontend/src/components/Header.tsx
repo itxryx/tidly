@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from 'react-oidc-context'
 
 export default function Header() {
+  const auth = useAuth()
+  const userEmail = auth.user?.profile.email || 'Not logged in'
+
   return (
     <header className="py-3 px-4 border-b bg-card shadow-md">
       <div className="container mx-auto flex justify-between items-center">
@@ -10,12 +14,12 @@ export default function Header() {
             <li>
               <span className="cursor-default text-muted-foreground flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                user@example.com
+                {userEmail}
               </span>
             </li>
             <li>
-              <Link 
-                to="/logout" 
+              <Link
+                to="/logout"
                 className="px-3 py-1.5 border border-border rounded hover:bg-accent/30 transition-colors"
               >
                 Logout

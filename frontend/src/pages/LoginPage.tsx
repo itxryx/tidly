@@ -1,25 +1,28 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from 'react-oidc-context'
+import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
+  const auth = useAuth()
+
+  const handleLogin = async () => {
+    auth.signinRedirect()
+  }
+  
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center p-8">
       <div className="w-full max-w-md">
         <div className="bg-card border border-border rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-primary mb-2">tidly</h1>
-            <div className="h-1 w-16 mx-auto bg-accent/50 rounded-full mb-4"></div>
-            <p className="text-muted-foreground">Simple and easy way to organize your thoughts</p>
           </div>
           
-          <Link 
-            to="/login-callback" 
-            className="flex justify-center w-full bg-secondary/20 border border-border p-3 rounded-lg hover:bg-secondary/40 transition-colors"
+          <Button
+          className="flex justify-center w-full"
+            onClick={handleLogin}
           >
-            <span className="flex items-center gap-2">
-              <span className="w-4 h-4"></span>
-              Sign in with Google
-            </span>
-          </Link>
+            Sign in with Google
+          </Button>
         </div>
         
         <footer className="mt-8 text-center">
