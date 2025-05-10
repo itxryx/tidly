@@ -3,4 +3,12 @@
   "name": "tidly-backend",
   "compatibility_date": "2025-05-07",
   "main": "src/index.ts",
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tidly",
+      "database_id": "c3fba322-523f-44e9-b79b-917c3fea9e18"
+    }
+  ]
 }
