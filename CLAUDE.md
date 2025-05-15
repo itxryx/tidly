@@ -13,14 +13,68 @@
 
 ## プロジェクト: tidly
 
-これは、まだコードファイルがない新しく初期化されたリポジトリのようです。プロジェクトが進化するにつれて、このドキュメントは以下の内容で更新されます：
+このプロジェクトはフロントエンドとバックエンドを分離したアプリケーションです。
 
-1. ビルド、リント、テストコマンド
-2. プロジェクトのアーキテクチャと構造
-3. 開発ワークフロー
-4. 重要な規約とパターン
+### フロントエンド
 
-現時点では、コードベースが成長するにつれて拡張されるプレースホルダーです。
+フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。CloudflareのWranglerを使用してデプロイする設定も含まれています。
+
+### バックエンド
+
+バックエンドは現在まだ実装されていません。
+
+## コマンド
+
+### フロントエンド
+
+```bash
+# 開発サーバー起動
+cd frontend && npm run dev
+
+# ビルド
+cd frontend && npm run build
+
+# リント
+cd frontend && npm run lint
+
+# ビルドプレビュー
+cd frontend && npm run preview
+```
+
+## プロジェクト構造
+
+```
+frontend/
+├── src/                  # ソースコード
+│   ├── assets/           # 静的アセット（画像など）
+│   ├── pages/            # ページコンポーネント
+│   │   ├── TopPage.tsx   # トップページ
+│   │   └── AboutPage.tsx # Aboutページ
+│   ├── App.tsx           # アプリケーションのメインコンポーネント（ルーティング設定）
+│   └── main.tsx          # エントリーポイント
+├── public/               # 公開ディレクトリ
+├── dist/                 # ビルド出力ディレクトリ
+├── vite.config.ts        # Vite設定
+└── wrangler.jsonc        # Cloudflare Wrangler設定
+
+backend/
+└── （実装待ち）
+```
+
+## 技術スタック
+
+### フロントエンド
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- react-router-dom
+- Cloudflare Pages
+
+### 開発環境
+- Node.js 22.14.0 (volta管理)
+- ESLint 9
+- TypeScript 5.8
 
 ## Git情報
 
@@ -28,14 +82,14 @@
 - メインブランチ: 未定
 - 初期コミット: "init"
 
-## 次のステップ
+## 開発ワークフロー
 
-このリポジトリに新しいコードを追加する際は、以下の文書化を検討してください：
+1. `npm run dev` でローカル開発サーバーを起動
+2. 変更を加える
+3. `npm run lint` でコードをチェック
+4. `npm run build` でビルド
+5. `npm run preview` でビルド結果をプレビュー
 
-1. プロジェクトの目的と目標
-2. 必要な依存関係とセットアップ手順
-3. 開発コマンド
-4. テスト戦略
-5. デプロイ手順
+## デプロイ
 
-このファイルはプロジェクトが成熟するにつれて更新されます。
+フロントエンドはCloudflare Pagesにデプロイする予定です。wrangler.jsonc設定ファイルがすでに用意されています。
