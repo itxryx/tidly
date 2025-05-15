@@ -17,7 +17,7 @@
 
 ### フロントエンド
 
-フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。CloudflareのWranglerを使用してデプロイする設定も含まれています。
+フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。Cloudflare Pagesにデプロイするための設定（Wrangler）も含まれており、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
 
 ### バックエンド
 
@@ -51,7 +51,8 @@ frontend/
 │   │   ├── TopPage.tsx   # トップページ
 │   │   └── AboutPage.tsx # Aboutページ
 │   ├── App.tsx           # アプリケーションのメインコンポーネント（ルーティング設定）
-│   └── main.tsx          # エントリーポイント
+│   ├── main.tsx          # エントリーポイント
+│   └── worker.js         # Cloudflare Workersのエントリーポイント
 ├── public/               # 公開ディレクトリ
 ├── dist/                 # ビルド出力ディレクトリ
 ├── vite.config.ts        # Vite設定
@@ -70,6 +71,7 @@ backend/
 - Tailwind CSS
 - react-router-dom
 - Cloudflare Pages
+- Cloudflare Workers
 
 ### 開発環境
 - Node.js 22.14.0 (volta管理)
@@ -92,4 +94,10 @@ backend/
 
 ## デプロイ
 
-フロントエンドはCloudflare Pagesにデプロイする予定です。wrangler.jsonc設定ファイルがすでに用意されています。
+フロントエンドはCloudflare Pagesにデプロイします。wrangler.jsonc設定ファイルが用意されており、以下の機能が設定されています：
+
+- SPA（Single Page Application）モードでの404ハンドリング
+- Cloudflare Workersを使用したカスタムレスポンス処理（X-Robots-Tagヘッダーの追加など）
+- ディレクトリ指定したアセットの配信
+
+デプロイコマンドは別途設定が必要です。
