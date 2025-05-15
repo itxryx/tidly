@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "tidly-backend",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "wrangler": "^4.4.0"
+  },
+  "volta": {
+    "node": "22.14.0"
   }
 }
