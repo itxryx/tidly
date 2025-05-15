@@ -17,7 +17,7 @@
 
 ### フロントエンド
 
-フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。Cloudflareのvite-pluginを使用してビルド設定を最適化し、Cloudflare Pagesにデプロイするための設定が含まれています。また、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
+フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。トップページ、Aboutページの他に、プライバシーポリシーページ、サインイン関連のページ、404ページなどの基本的なページが実装されています。Cloudflareのvite-pluginを使用してビルド設定を最適化し、Cloudflare Pagesにデプロイするための設定が含まれています。開発サーバーはすべてのネットワークインターフェースでリッスンするように設定されています。また、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
 
 ### バックエンド
 
@@ -61,8 +61,12 @@ frontend/
 ├── src/                  # ソースコード
 │   ├── assets/           # 静的アセット（画像など）
 │   ├── pages/            # ページコンポーネント
-│   │   ├── TopPage.tsx   # トップページ
-│   │   └── AboutPage.tsx # Aboutページ
+│   │   ├── TopPage.tsx          # トップページ
+│   │   ├── AboutPage.tsx        # Aboutページ
+│   │   ├── PrivacyPolicy.tsx    # プライバシーポリシーページ
+│   │   ├── SignInPage.tsx       # サインインページ
+│   │   ├── SignInCallbackPage.tsx # サインインコールバックページ
+│   │   └── NotFoundPage.tsx     # 404ページ
 │   ├── App.tsx           # アプリケーションのメインコンポーネント（ルーティング設定）
 │   ├── main.tsx          # エントリーポイント
 │   └── worker.js         # Cloudflare Workersのエントリーポイント
@@ -77,6 +81,19 @@ backend/
 │   │   └── api-authentication.ts # API認証ミドルウェア
 │   └── index.ts          # アプリケーションのエントリーポイント（Honoフレームワーク）
 └── wrangler.jsonc        # Cloudflare Wrangler設定
+```
+
+## ルーティング構造
+
+フロントエンドでは以下のルートが設定されています：
+
+```
+/ - トップページ
+/about - アバウトページ
+/privacy-policy - プライバシーポリシーページ
+/sign-in - サインインページ
+/sign-in/callback - サインインコールバックページ
+* - 404ページ（ワイルドカードマッチ）
 ```
 
 ## 技術スタック
