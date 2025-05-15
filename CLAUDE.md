@@ -17,11 +17,11 @@
 
 ### フロントエンド
 
-フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。Cloudflare Pagesにデプロイするための設定（Wrangler）も含まれており、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
+フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。Cloudflareのvite-pluginを使用してビルド設定を最適化し、Cloudflare Pagesにデプロイするための設定が含まれています。また、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
 
 ### バックエンド
 
-バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。現在は基本的なAPIエンドポイントのみ実装されています。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
+バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。API認証のためのミドルウェアが実装されており、環境変数からAPI_KEYを取得して認証を行います。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
 
 ## コマンド
 
@@ -68,11 +68,13 @@ frontend/
 │   └── worker.js         # Cloudflare Workersのエントリーポイント
 ├── public/               # 公開ディレクトリ
 ├── dist/                 # ビルド出力ディレクトリ
-├── vite.config.ts        # Vite設定
+├── vite.config.ts        # Vite設定（server設定、cloudflare/react/tailwindcssプラグイン）
 └── wrangler.jsonc        # Cloudflare Wrangler設定
 
 backend/
 ├── src/                  # ソースコード
+│   ├── middlewares/      # ミドルウェア
+│   │   └── api-authentication.ts # API認証ミドルウェア
 │   └── index.ts          # アプリケーションのエントリーポイント（Honoフレームワーク）
 └── wrangler.jsonc        # Cloudflare Wrangler設定
 ```
@@ -81,10 +83,11 @@ backend/
 
 ### フロントエンド
 - React 19
-- TypeScript
-- Vite
-- Tailwind CSS
-- react-router-dom
+- TypeScript 5.8
+- Vite 6.3
+- Tailwind CSS 4.1
+- react-router-dom 7.6
+- @cloudflare/vite-plugin 1.2
 - Cloudflare Pages
 - Cloudflare Workers
 
@@ -92,13 +95,13 @@ backend/
 - Hono 4.7.9（Cloudflare Workers向けWebフレームワーク）
 - TypeScript
 - Cloudflare Workers
-- Wrangler CLI 4.15.1
+- Wrangler CLI 4.4.0
 
 ### 開発環境
 - Node.js 22.14.0 (volta管理)
-- ESLint 9
-- TypeScript 5.8
-- Wrangler CLI（Cloudflareのデプロイツール）
+- ESLint 9.25.0
+- TypeScript 5.8.3
+- typescript-eslint 8.30.1
 
 ## Git情報
 
@@ -109,7 +112,7 @@ backend/
 ## 開発ワークフロー
 
 ### フロントエンド
-1. `npm run dev` でローカル開発サーバーを起動
+1. `npm run dev` でローカル開発サーバーを起動（すべてのIPアドレスでリッスンするよう設定済み）
 2. 変更を加える
 3. `npm run lint` でコードをチェック
 4. `npm run build` でビルド
@@ -121,22 +124,18 @@ backend/
 3. `npm run cf-typegen` で必要に応じてCloudflare向けの型を生成
 4. `npm run deploy` でCloudflare Workersにデプロイ
 
+## セキュリティ
+
+バックエンドAPIはBearer認証を採用しています。環境変数`API_KEY`に設定された値と一致するトークンをAuthorizationヘッダーで送信する必要があります。認証が失敗した場合は401エラーが返されます。
+
 ## デプロイ
 
 ### フロントエンド
-フロントエンドはCloudflare Pagesにデプロイします。wrangler.jsonc設定ファイルが用意されており、以下の機能が設定されています：
+フロントエンドはCloudflare Pagesにデプロイします。vite.config.tsにcloudflareプラグインが設定されており、Cloudflare Pagesへのデプロイが最適化されています。
 
 - SPA（Single Page Application）モードでの404ハンドリング
 - Cloudflare Workersを使用したカスタムレスポンス処理（X-Robots-Tagヘッダーの追加など）
 - ディレクトリ指定したアセットの配信
 
 ### バックエンド
-バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。現在の設定では以下のオプションがコメントアウトされており、必要に応じて有効化できます：
-
-- Node.js互換モード
-- 環境変数の設定
-- KV名前空間の利用
-- R2バケットの利用
-- D1データベースの利用
-- AIの利用
-- 監視機能の有効化
+バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。環境変数API_KEYを設定してデプロイする必要があります。
