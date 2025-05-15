@@ -13,7 +13,7 @@
 
 ## プロジェクト: tidly
 
-このプロジェクトはフロントエンドとバックエンドを分離したアプリケーションです。
+このプロジェクトはフロントエンドとバックエンドを分離したアプリケーションです。両方ともCloudflare Platformを使用してデプロイするよう設計されています。
 
 ### フロントエンド
 
@@ -21,7 +21,7 @@
 
 ### バックエンド
 
-バックエンドは現在まだ実装されていません。
+バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。現在は基本的なAPIエンドポイントのみ実装されています。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
 
 ## コマンド
 
@@ -39,6 +39,19 @@ cd frontend && npm run lint
 
 # ビルドプレビュー
 cd frontend && npm run preview
+```
+
+### バックエンド
+
+```bash
+# 開発サーバー起動
+cd backend && npm run dev
+
+# デプロイ
+cd backend && npm run deploy
+
+# Cloudflare Workers用の型生成
+cd backend && npm run cf-typegen
 ```
 
 ## プロジェクト構造
@@ -59,7 +72,9 @@ frontend/
 └── wrangler.jsonc        # Cloudflare Wrangler設定
 
 backend/
-└── （実装待ち）
+├── src/                  # ソースコード
+│   └── index.ts          # アプリケーションのエントリーポイント（Honoフレームワーク）
+└── wrangler.jsonc        # Cloudflare Wrangler設定
 ```
 
 ## 技術スタック
@@ -73,10 +88,17 @@ backend/
 - Cloudflare Pages
 - Cloudflare Workers
 
+### バックエンド
+- Hono 4.7.9（Cloudflare Workers向けWebフレームワーク）
+- TypeScript
+- Cloudflare Workers
+- Wrangler CLI 4.15.1
+
 ### 開発環境
 - Node.js 22.14.0 (volta管理)
 - ESLint 9
 - TypeScript 5.8
+- Wrangler CLI（Cloudflareのデプロイツール）
 
 ## Git情報
 
@@ -86,18 +108,35 @@ backend/
 
 ## 開発ワークフロー
 
+### フロントエンド
 1. `npm run dev` でローカル開発サーバーを起動
 2. 変更を加える
 3. `npm run lint` でコードをチェック
 4. `npm run build` でビルド
 5. `npm run preview` でビルド結果をプレビュー
 
+### バックエンド
+1. `npm run dev` でローカル開発サーバーを起動
+2. 変更を加える
+3. `npm run cf-typegen` で必要に応じてCloudflare向けの型を生成
+4. `npm run deploy` でCloudflare Workersにデプロイ
+
 ## デプロイ
 
+### フロントエンド
 フロントエンドはCloudflare Pagesにデプロイします。wrangler.jsonc設定ファイルが用意されており、以下の機能が設定されています：
 
 - SPA（Single Page Application）モードでの404ハンドリング
 - Cloudflare Workersを使用したカスタムレスポンス処理（X-Robots-Tagヘッダーの追加など）
 - ディレクトリ指定したアセットの配信
 
-デプロイコマンドは別途設定が必要です。
+### バックエンド
+バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。現在の設定では以下のオプションがコメントアウトされており、必要に応じて有効化できます：
+
+- Node.js互換モード
+- 環境変数の設定
+- KV名前空間の利用
+- R2バケットの利用
+- D1データベースの利用
+- AIの利用
+- 監視機能の有効化
