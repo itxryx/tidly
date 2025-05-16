@@ -60,6 +60,16 @@ cd backend && npm run cf-typegen
 frontend/
 ├── src/                  # ソースコード
 │   ├── assets/           # 静的アセット（画像など）
+│   ├── components/       # 共通コンポーネント
+│   │   ├── Button.tsx            # ボタンコンポーネント
+│   │   ├── CircleProgressBar.tsx # 円形進捗バー
+│   │   ├── Footer.tsx            # フッターコンポーネント
+│   │   ├── Header.tsx            # ヘッダーコンポーネント
+│   │   ├── MainLayout.tsx        # メインレイアウト
+│   │   ├── PostForm.tsx          # 投稿フォーム
+│   │   ├── PostItem.tsx          # 投稿アイテム
+│   │   ├── PostList.tsx          # 投稿リスト
+│   │   └── TextArea.tsx          # テキストエリア
 │   ├── pages/            # ページコンポーネント
 │   │   ├── TopPage.tsx          # トップページ
 │   │   ├── AboutPage.tsx        # Aboutページ
@@ -69,6 +79,7 @@ frontend/
 │   │   └── NotFoundPage.tsx     # 404ページ
 │   ├── App.tsx           # アプリケーションのメインコンポーネント（ルーティング設定）
 │   ├── main.tsx          # エントリーポイント
+│   ├── mockData.ts       # モックデータ（開発用）
 │   └── worker.js         # Cloudflare Workersのエントリーポイント
 ├── public/               # 公開ディレクトリ
 ├── dist/                 # ビルド出力ディレクトリ
@@ -82,6 +93,22 @@ backend/
 │   └── index.ts          # アプリケーションのエントリーポイント（Honoフレームワーク）
 └── wrangler.jsonc        # Cloudflare Wrangler設定
 ```
+
+## データ構造
+
+### 投稿データ（Post）
+
+フロントエンドのモックデータとして以下の構造の投稿データを使用しています：
+
+```typescript
+interface Post {
+  id: string;       // 投稿ID
+  content: string;  // 投稿内容
+  createdAt: string; // 作成日時（ISO 8601形式）
+}
+```
+
+`mockData.ts`ファイルには開発用のモックデータが定義されています。
 
 ## ルーティング構造
 
@@ -124,7 +151,12 @@ backend/
 
 - 現在のブランチ: develop
 - メインブランチ: 未定
-- 初期コミット: "init"
+- 最近のコミット:
+  - `fd16279` fix frontend mock
+  - `0243d79` add frontend mock
+  - `804db52` fix index.html
+  - `f390fa2` add color palette
+  - `5c3bfbd` add frontend pages
 
 ## 開発ワークフロー
 
