@@ -6,7 +6,7 @@ const TopPage: React.FC = () => {
   
   return (
     <>
-      <h1 className="text-3xl font-bold underline">
+      <h1 className="text-3xl font-bold underline text-white">
         tidly / top
       </h1>
       <p className="text-green-500">top</p>
