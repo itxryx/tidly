@@ -17,11 +17,10 @@ const CircleProgressBar: React.FC<CircleProgressBarProps> = ({
   progressColor = 'var(--color-amber)',
   textColor = 'var(--color-white)'
 }) => {
-  const normalizedProgress = Math.max(progress, 0)
-  const displayProgress = Math.min(normalizedProgress, 100)
+  const normalizedProgress = Math.min(Math.max(progress, 0), 100)
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
-  const strokeDashoffset = circumference - (Math.min(normalizedProgress, 100) / 100) * circumference
+  const strokeDashoffset = circumference - (normalizedProgress / 100) * circumference
 
   return (
     <div style={{ width: size, height: size, position: 'relative' }}>

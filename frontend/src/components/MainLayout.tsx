@@ -13,7 +13,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, showSignOut = false }
     <div className="min-h-screen flex flex-col bg-primary-darkgreen">
       <Header />
       <main className="container mx-auto flex-grow p-4">
-        {children}
+        <div className="w-[90%] sm:w-[90%] md:w-1/2 mx-auto">
+          {children}
+        </div>
       </main>
       <Footer showSignOut={showSignOut} />
     </div>
