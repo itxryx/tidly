@@ -1,22 +1,28 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import MainLayout from '../components/MainLayout'
+import PostForm from '../components/PostForm'
+import PostList from '../components/PostList'
+import { mockPosts } from '../mockData'
+import type { Post } from '../components/PostItem'
 
 const TopPage: React.FC = () => {
-  const [count, setCount] = useState(0)
-  
+  const [posts, setPosts] = useState<Post[]>(mockPosts)
+
+  const handlePostSubmit = (content: string) => {
+    const newPost: Post = {
+      id: Date.now().toString(),
+      content,
+      createdAt: new Date().toISOString()
+    }
+
+    setPosts([newPost, ...posts])
+  }
+
   return (
-    <>
-      <h1 className="text-3xl font-bold underline text-white">
-        tidly / top
-      </h1>
-      <p className="text-green-500">top</p>
-      <Link to="/about" className="text-blue-500 hover:underline">about</Link>
-      <div className="p-16">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
+    <MainLayout showLogout>
+      <PostForm onSubmit={handlePostSubmit} />
+      <PostList posts={posts} />
+    </MainLayout>
   )
 }
 
