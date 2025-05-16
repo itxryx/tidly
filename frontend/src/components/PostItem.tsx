@@ -20,7 +20,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
   })
 
   return (
-    <div className="bg-primary-moss p-4 rounded-md shadow mb-4">
+    <div className="bg-primary-evergreen p-4 rounded-md shadow mb-4">
       <div className="flex justify-end items-start">
         <div className="text-sm text-white">{formattedDate}</div>
       </div>

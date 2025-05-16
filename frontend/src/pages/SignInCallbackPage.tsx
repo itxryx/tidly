@@ -24,17 +24,17 @@ const SignInCallbackPage: React.FC = () => {
         <div className="bg-primary-evergreen p-6 rounded-md shadow max-w-md w-full text-center">
           {isLoading ? (
             <>
-              <h1 className="text-2xl font-bold mb-4 text-white">ログイン処理中...</h1>
+              <h1 className="text-2xl font-bold mb-4 text-white">Signing in...</h1>
               <p className="text-white">
-                認証情報を検証しています。しばらくお待ちください。
+                Verifying your credentials. Please wait a moment.
               </p>
             </>
           ) : error ? (
             <>
-              <h1 className="text-2xl font-bold mb-4 text-amber">エラーが発生しました</h1>
+              <h1 className="text-2xl font-bold mb-4 text-amber">An error occurred</h1>
               <p className="text-white mb-4">{error}</p>
               <Link to="/sign-in" className="text-primary-evergreen hover:underline">
-                ログインページに戻る
+                Back to sign in page
               </Link>
             </>
           ) : null}

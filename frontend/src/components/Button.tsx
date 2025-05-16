@@ -13,16 +13,23 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseClasses = 'px-4 py-2 rounded font-medium transition-colors'
-  const variantClasses = {
-    primary: 'bg-primary-moss text-white hover:bg-primary-forest',
-    secondary: 'bg-gray text-graphite hover:bg-titanium'
-  }
+  const baseClasses = 'px-4 py-2 rounded font-medium'
+
+  const activeClasses = props.disabled
+    ? ''
+    : 'transition-colors cursor-pointer'
+
+  const buttonStyle = props.disabled
+    ? 'bg-gray text-graphite opacity-50 cursor-not-allowed'
+    : variant === 'primary'
+      ? 'bg-amber text-graphite hover:bg-mustard'
+      : 'bg-gray text-graphite hover:bg-titanium'
+
   const widthClass = fullWidth ? 'w-full' : ''
 
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${widthClass} ${className}`}
+      className={`${baseClasses} ${buttonStyle} ${activeClasses} ${widthClass} ${className}`}
       {...props}
     >
       {children}

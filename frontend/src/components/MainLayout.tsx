@@ -5,17 +5,17 @@ import Footer from './Footer'
 
 interface MainLayoutProps {
   children: ReactNode
-  showLogout?: boolean
+  showSignOut?: boolean
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, showLogout = false }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, showSignOut = false }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-primary-deepforest">
+    <div className="min-h-screen flex flex-col bg-primary-darkgreen">
       <Header />
       <main className="container mx-auto flex-grow p-4">
         {children}
       </main>
-      <Footer showLogout={showLogout} />
+      <Footer showSignOut={showSignOut} />
     </div>
   )
 }

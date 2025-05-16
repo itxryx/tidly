@@ -11,15 +11,15 @@ const PostList: React.FC<PostListProps> = ({ posts, isLoading = false }) => {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-gray-500">
-        ロード中...
+        Loading...
       </div>
     )
   }
 
   if (posts.length === 0) {
     return (
-      <div className="bg-primary-moss p-4 rounded-md shadow text-center text-white">
-        投稿がありません。最初の投稿をしてみましょう！
+      <div className="bg-primary-evergreen p-4 rounded-md shadow text-center text-white">
+        No posts yet. Write your first post!
       </div>
     )
   }

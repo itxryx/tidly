@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-darkgreen: #0A2E1F;
-  --color-primary-deepforest: #12412A;
-  --color-primary-evergreen: #1A5336;
-  --color-primary-moss: #2D6A48;
-  --color-primary-forest: #3C8157;
+  --color-primary-darkgreen: #051A12;
+  --color-primary-deepforest: #082920;
+  --color-primary-evergreen: #0E3A25;
+  --color-primary-moss: #1B4F33;
+  --color-primary-forest: #2A6745;
 
   --color-amber: #F0B000;
   --color-mustard: #F7CA18;
@@ -17,6 +17,16 @@
   --color-white: #F8F9FA;
 }
 
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,7 +34,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #082920;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

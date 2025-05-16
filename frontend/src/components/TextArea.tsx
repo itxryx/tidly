@@ -12,25 +12,17 @@ const TextArea: React.FC<TextAreaProps> = ({
   className = '',
   ...props
 }) => {
-  const [currentBytes, setCurrentBytes] = useState(0)
   const [inputValue, setInputValue] = useState(value || '')
 
   useEffect(() => {
-    const stringValue = String(inputValue)
-    const encoder = new TextEncoder()
-    const bytes = encoder.encode(stringValue).length
-    setCurrentBytes(bytes)
-  }, [inputValue])
+    setInputValue(value === undefined ? '' : value)
+  }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value
-    const encoder = new TextEncoder()
-    const bytes = encoder.encode(newValue).length
 
-    if (bytes <= maxBytes) {
-      setInputValue(newValue)
-      onChange?.(e)
-    }
+    setInputValue(newValue)
+    onChange?.(e)
   }
 
   return (
@@ -38,14 +30,9 @@ const TextArea: React.FC<TextAreaProps> = ({
       <textarea
         value={inputValue}
         onChange={handleChange}
-        className={`w-full p-2 border border-gray rounded-md focus:ring-2 focus:ring-primary-evergreen focus:border-transparent ${className}`}
+        className={`w-full p-2 border border-gray rounded-md focus:ring-2 focus:ring-primary-evergreen focus:border-transparent h-[calc(1.2em*6+1em)] resize-none scrollbar-hide overflow-y-auto ${className}`}
         {...props}
       />
-      <div className="flex justify-end text-sm text-gray mt-1">
-        <span className={currentBytes >= maxBytes ? 'text-amber' : ''}>
-          {currentBytes} / {maxBytes} バイト
-        </span>
-      </div>
     </div>
   )
 }

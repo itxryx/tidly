@@ -19,9 +19,11 @@ const TopPage: React.FC = () => {
   }
 
   return (
-    <MainLayout showLogout>
-      <PostForm onSubmit={handlePostSubmit} />
-      <PostList posts={posts} />
+    <MainLayout showSignOut>
+      <div className="w-3/4 sm:w-3/4 md:w-1/2 mx-auto">
+        <PostForm onSubmit={handlePostSubmit} />
+        <PostList posts={posts} />
+      </div>
     </MainLayout>
   )
 }
