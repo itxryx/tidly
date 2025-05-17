@@ -26,7 +26,7 @@ const TopPage: React.FC = () => {
   }
 
   return (
-    <MainLayout showSignOut>
+    <MainLayout>
       <PostForm onSubmit={handlePostSubmit} />
       <PostList posts={posts} />
     </MainLayout>
