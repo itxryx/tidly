@@ -21,6 +21,8 @@
 
 投稿フォームではCircleProgressBarコンポーネントを使用して、入力されたテキストのバイト数を視覚的に表示します。投稿は最大200バイトに制限されており、マルチバイト文字（日本語など）も適切に処理されます。
 
+認証機能はAWS Cognitoを使用して実装されています。ユーザーはGoogle認証を通じてログインでき、認証状態に応じてアプリケーションの各ページへのアクセス制御が行われます。認証情報は環境変数を通じて設定され、`react-oidc-context`と`oidc-client-ts`パッケージを使用してOIDC認証フローを管理しています。
+
 ### バックエンド
 
 バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。API認証のためのミドルウェアが実装されており、環境変数からAPI_KEYを取得して認証を行います。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
@@ -66,7 +68,7 @@ frontend/
 │   │   ├── Button.tsx            # ボタンコンポーネント
 │   │   ├── CircleProgressBar.tsx # 円形進捗バー
 │   │   ├── Footer.tsx            # フッターコンポーネント
-│   │   ├── Header.tsx            # ヘッダーコンポーネント
+│   │   ├── Header.tsx            # ヘッダーコンポーネント（認証状態表示）
 │   │   ├── MainLayout.tsx        # メインレイアウト
 │   │   ├── PostForm.tsx          # 投稿フォーム
 │   │   ├── PostItem.tsx          # 投稿アイテム
@@ -80,7 +82,7 @@ frontend/
 │   │   ├── SignInCallbackPage.tsx # サインインコールバックページ
 │   │   └── NotFoundPage.tsx     # 404ページ
 │   ├── App.tsx           # アプリケーションのメインコンポーネント（ルーティング設定）
-│   ├── main.tsx          # エントリーポイント
+│   ├── main.tsx          # エントリーポイント（認証設定）
 │   ├── mockData.ts       # モックデータ（開発用）
 │   └── worker.js         # Cloudflare Workersのエントリーポイント
 ├── public/               # 公開ディレクトリ
@@ -117,11 +119,11 @@ interface Post {
 フロントエンドでは以下のルートが設定されています：
 
 ```
-/ - トップページ
+/ - トップページ（認証必須）
 /about - アバウトページ
 /privacy-policy - プライバシーポリシーページ
-/sign-in - サインインページ
-/sign-in/callback - サインインコールバックページ
+/sign-in - サインインページ（未認証時のみアクセス可能）
+/sign-in/callback - サインインコールバックページ（未認証時のみアクセス可能）
 * - 404ページ（ワイルドカードマッチ）
 ```
 
@@ -134,6 +136,8 @@ interface Post {
 - Tailwind CSS 4.1
 - react-router-dom 7.6
 - @cloudflare/vite-plugin 1.2
+- react-oidc-context 3.3.0
+- oidc-client-ts 3.2.1
 - Cloudflare Pages
 - Cloudflare Workers
 
@@ -152,13 +156,13 @@ interface Post {
 ## Git情報
 
 - 現在のブランチ: develop
-- メインブランチ: 未定
+- メインブランチ: main
 - 最近のコミット:
+  - `a9398aa` add frontend authentication
+  - `7e59214` update CLAUDE.md
+  - `890c7c0` fix frontend mock
   - `4d8f610` update CLAUDE.md
   - `418cdb7` fix frontend mock
-  - `fd16279` fix frontend mock
-  - `0243d79` add frontend mock
-  - `804db52` fix index.html
 
 ## 開発ワークフロー
 
@@ -177,6 +181,15 @@ interface Post {
 
 ## セキュリティ
 
+### フロントエンド
+フロントエンドの認証にはAWS Cognitoを使用しています。認証情報は以下の環境変数を通じて設定されます：
+- VITE_COGNITO_AUTHORITY: Cognitoの認証エンドポイント
+- VITE_COGNITO_CLIENT_ID: アプリケーションのクライアントID
+- VITE_COGNITO_REDIRECT_URI: 認証成功後のリダイレクトURI
+
+認証プロバイダーとしてGoogle認証が実装されており、OIDCプロトコルを使用して認証フローを管理しています。
+
+### バックエンド
 バックエンドAPIはBearer認証を採用しています。環境変数`API_KEY`に設定された値と一致するトークンをAuthorizationヘッダーで送信する必要があります。認証が失敗した場合は401エラーが返されます。
 
 ## デプロイ
