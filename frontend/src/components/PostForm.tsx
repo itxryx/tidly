@@ -57,22 +57,18 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
       <TextArea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="What's happening?"
+        placeholder="No need to tidy up your words..."
         maxBytes={200}
         disabled={isSubmitting}
       />
       <div className="mt-2 flex justify-end items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className={content.length > 0 && new TextEncoder().encode(content).length >= 200 ? 'text-amber' : 'text-gray'}>
-            {new TextEncoder().encode(content).length} / 200 bytes
-          </span>
-          <CircleProgressBar
-            progress={Math.round((new TextEncoder().encode(content).length / 200) * 100)}
-            size={36}
-            strokeWidth={4}
-            progressColor={content.length > 0 && new TextEncoder().encode(content).length >= 200 ? 'var(--color-amber)' : 'var(--color-primary-forest)'}
-          />
-        </div>
+        <CircleProgressBar
+          progress={Math.round((new TextEncoder().encode(content).length / 200) * 100)}
+          size={36}
+          strokeWidth={4}
+          progressColor={content.length > 0 && new TextEncoder().encode(content).length >= 200 ? 'var(--color-amber)' : 'var(--color-primary-forest)'}
+          displayText={`${new TextEncoder().encode(content).length}`}
+        />
         <Button
           type="submit"
           disabled={!content.trim() || isSubmitting || new TextEncoder().encode(content).length >= 200}

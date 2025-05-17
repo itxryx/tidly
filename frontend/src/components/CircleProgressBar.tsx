@@ -7,6 +7,7 @@ interface CircleProgressBarProps {
   backgroundColor?: string
   progressColor?: string
   textColor?: string
+  displayText?: string
 }
 
 const CircleProgressBar: React.FC<CircleProgressBarProps> = ({
@@ -15,7 +16,8 @@ const CircleProgressBar: React.FC<CircleProgressBarProps> = ({
   strokeWidth = 5,
   backgroundColor = 'var(--color-primary-deepforest)',
   progressColor = 'var(--color-amber)',
-  textColor = 'var(--color-white)'
+  textColor = 'var(--color-white)',
+  displayText
 }) => {
   const normalizedProgress = Math.min(Math.max(progress, 0), 100)
   const radius = (size - strokeWidth) / 2
@@ -64,7 +66,7 @@ const CircleProgressBar: React.FC<CircleProgressBarProps> = ({
           color: textColor
         }}
       >
-        {`${Math.round(normalizedProgress)}%`}
+        {displayText || `${Math.round(normalizedProgress)}%`}
       </div>
     </div>
   )

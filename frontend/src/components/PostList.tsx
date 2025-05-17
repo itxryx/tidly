@@ -19,7 +19,7 @@ const PostList: React.FC<PostListProps> = ({ posts, isLoading = false }) => {
   if (posts.length === 0) {
     return (
       <div className="bg-primary-evergreen p-4 rounded-md shadow text-center text-white">
-        No posts yet. Write your first post!
+        No posts yet.
       </div>
     )
   }
