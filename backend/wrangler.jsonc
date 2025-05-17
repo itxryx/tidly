@@ -2,5 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tidly-backend",
   "main": "src/index.ts",
-  "compatibility_date": "2025-05-15"
+  "compatibility_date": "2025-05-15",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tidly",
+      "database_id": "80be7375-bb53-48ff-bda1-369096fa11ab",
+    },
+  ],
 }
