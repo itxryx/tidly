@@ -19,6 +19,8 @@
 
 フロントエンドは、React + TypeScript + Viteを使用して構築されています。UIフレームワークとしてTailwind CSSを使用しており、ルーティングにはreact-router-domを採用しています。トップページ、Aboutページの他に、プライバシーポリシーページ、サインイン関連のページ、404ページなどの基本的なページが実装されています。Cloudflareのvite-pluginを使用してビルド設定を最適化し、Cloudflare Pagesにデプロイするための設定が含まれています。開発サーバーはすべてのネットワークインターフェースでリッスンするように設定されています。また、Cloudflare Workersを使用したカスタムレスポンス処理も実装されています。
 
+投稿フォームではCircleProgressBarコンポーネントを使用して、入力されたテキストのバイト数を視覚的に表示します。投稿は最大200バイトに制限されており、マルチバイト文字（日本語など）も適切に処理されます。
+
 ### バックエンド
 
 バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。API認証のためのミドルウェアが実装されており、環境変数からAPI_KEYを取得して認証を行います。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
@@ -108,7 +110,7 @@ interface Post {
 }
 ```
 
-`mockData.ts`ファイルには開発用のモックデータが定義されています。
+`mockData.ts`ファイルには現在空の投稿配列が定義されています。アプリケーションを使用すると、ユーザーが作成した投稿がこの配列に追加されていきます。
 
 ## ルーティング構造
 
@@ -152,11 +154,11 @@ interface Post {
 - 現在のブランチ: develop
 - メインブランチ: 未定
 - 最近のコミット:
+  - `4d8f610` update CLAUDE.md
+  - `418cdb7` fix frontend mock
   - `fd16279` fix frontend mock
   - `0243d79` add frontend mock
   - `804db52` fix index.html
-  - `f390fa2` add color palette
-  - `5c3bfbd` add frontend pages
 
 ## 開発ワークフロー
 
