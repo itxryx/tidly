@@ -1,43 +1,45 @@
 import React, { useEffect, useState } from 'react'
-import { Navigate, Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from 'react-oidc-context'
+import type { ErrorContext } from 'react-oidc-context'
 import MainLayout from '../components/MainLayout'
 
 const SignInCallbackPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [error] = useState<string | null>(null)
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [error, setError] = useState<ErrorContext | undefined>(undefined)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
+    setIsLoading(auth.isLoading)
+    setError(auth.error)
 
-    return () => clearTimeout(timer)
-  }, [])
-  
-  if (!isLoading && !error) {
-    return <Navigate to="/" replace />
-  }
-  
+    if (auth.isAuthenticated) {
+      navigate('/')
+    }
+  }, [auth.isLoading, auth.error])
+
   return (
     <MainLayout>
       <div className="flex items-center justify-center h-full">
         <div className="bg-primary-evergreen p-6 rounded-md shadow max-w-md w-full text-center">
-          {isLoading ? (
+          { isLoading && (
             <>
               <h1 className="text-2xl font-bold mb-4 text-white">Signing in...</h1>
               <p className="text-white">
-                Verifying your credentials. Please wait a moment.
+                Verifying your credentials.
               </p>
             </>
-          ) : error ? (
+          )}
+          { error && (
             <>
               <h1 className="text-2xl font-bold mb-4 text-amber">An error occurred</h1>
-              <p className="text-white mb-4">{error}</p>
+              <p className="text-white mb-4">{error.message}</p>
               <Link to="/sign-in" className="text-primary-evergreen hover:underline">
                 Back to sign in page
               </Link>
             </>
-          ) : null}
+          )}
         </div>
       </div>
     </MainLayout>

@@ -5,10 +5,9 @@ import Footer from './Footer'
 
 interface MainLayoutProps {
   children: ReactNode
-  showSignOut?: boolean
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, showSignOut = false }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({children}) => {
   return (
     <div className="min-h-screen flex flex-col bg-primary-darkgreen">
       <Header />
@@ -17,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, showSignOut = false }
           {children}
         </div>
       </main>
-      <Footer showSignOut={showSignOut} />
+      <Footer />
     </div>
   )
 }
