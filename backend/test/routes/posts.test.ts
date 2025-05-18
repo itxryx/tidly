@@ -123,7 +123,7 @@ describe('投稿API', () => {
   })
 
   describe('GET /v1/posts', () => {
-    it('ユーザーの投稿一覧を取得できること', async () => {
+    it('ユーザーの投稿一覧を取得できること（ページネーションあり）', async () => {
       // モックの設定
       const mockPosts = {
         posts: [
@@ -143,15 +143,61 @@ describe('投稿API', () => {
             updated_at: 1684567880,
             is_deleted: 0
           }
-        ]
+        ],
+        pagination: {
+          page: 1,
+          pageSize: 10,
+          totalCount: 12,
+          hasMore: true
+        }
       }
-      
+
       // レスポンスをモック
       mockAPIResponse('/v1/posts', 'GET', 200, mockPosts)
-      
+
       // リクエスト実行
-      const res = await apiTest.get('/v1/posts?sub=test-sub-123')
-      
+      const res = await apiTest.get('/v1/posts?sub=test-sub-123&page=1')
+
+      // 検証
+      expect(res.status).toBe(200)
+      expect(res.body).toEqual(mockPosts)
+    })
+
+    it('2ページ目の投稿一覧を取得できること', async () => {
+      // モックの設定
+      const mockPosts = {
+        posts: [
+          {
+            id: 11,
+            user_id: 1,
+            content: 'テスト投稿11',
+            created_at: 1684567790,
+            updated_at: 1684567790,
+            is_deleted: 0
+          },
+          {
+            id: 12,
+            user_id: 1,
+            content: 'テスト投稿12',
+            created_at: 1684567780,
+            updated_at: 1684567780,
+            is_deleted: 0
+          }
+        ],
+        pagination: {
+          page: 2,
+          pageSize: 10,
+          totalCount: 12,
+          hasMore: false
+        }
+      }
+
+      // レスポンスをモック
+      mockAPIResponse('/v1/posts', 'GET', 200, mockPosts)
+
+      // リクエスト実行
+      const res = await apiTest.get('/v1/posts?sub=test-sub-123&page=2')
+
       // 検証
       expect(res.status).toBe(200)
       expect(res.body).toEqual(mockPosts)
@@ -185,16 +231,40 @@ describe('投稿API', () => {
           message: 'subパラメータは必須です'
         }
       }
-      
+
       // レスポンスをモック
       mockAPIResponse('/v1/posts', 'GET', 400, errorResponse)
-      
+
       // リクエスト実行
       const res = await apiTest.get('/v1/posts')
-      
+
       // 検証
       expect(res.status).toBe(400)
       expect(res.body).toEqual(errorResponse)
+    })
+
+    it('不正なページパラメータの場合、エラーを返すこと', async () => {
+      // エラーレスポンスの設定
+      const errorResponse = {
+        error: {
+          code: 'INVALID_PARAMETER',
+          message: 'pageパラメータは正の整数である必要があります'
+        }
+      }
+
+      // レスポンスをモック
+      mockAPIResponse('/v1/posts', 'GET', 400, errorResponse)
+
+      // リクエスト実行（不正な値）
+      const res1 = await apiTest.get('/v1/posts?sub=test-sub-123&page=-1')
+      const res2 = await apiTest.get('/v1/posts?sub=test-sub-123&page=abc')
+
+      // 検証
+      expect(res1.status).toBe(400)
+      expect(res1.body).toEqual(errorResponse)
+
+      expect(res2.status).toBe(400)
+      expect(res2.body).toEqual(errorResponse)
     })
   })
 })

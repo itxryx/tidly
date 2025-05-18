@@ -8,11 +8,18 @@ type Bindings = {
   DB: CloudflareBindings['DB']
 }
 
+const DEFAULT_PAGE_SIZE = 10
+
 const posts = new Hono<{ Bindings: Bindings }>()
 
 posts.get('/', async (c) => {
   const prisma = getDB(c.env)
   const sub = c.req.query('sub')
+  const page = parseInt(c.req.query('page') || '1', 10)
+
+  if (isNaN(page) || page < 1) {
+    throw new ApiError('INVALID_PARAMETER', 'page parameter must be a positive integer', 400)
+  }
 
   if (!sub) {
     throw new ApiError('INVALID_PARAMETER', 'sub parameter is required', 400)
@@ -36,6 +43,15 @@ posts.get('/', async (c) => {
       },
       orderBy: {
         created_at: 'desc'
+      },
+      skip: (page - 1) * DEFAULT_PAGE_SIZE,
+      take: DEFAULT_PAGE_SIZE
+    })
+
+    const totalCount = await prisma.post.count({
+      where: {
+        user_id: user.id,
+        is_deleted: 0
       }
     })
 
@@ -48,7 +64,17 @@ posts.get('/', async (c) => {
       is_deleted: post.is_deleted
     }))
 
-    return c.json({ posts: formattedPosts })
+    const hasMore = totalCount > page * DEFAULT_PAGE_SIZE
+
+    return c.json({
+      posts: formattedPosts,
+      pagination: {
+        page,
+        pageSize: DEFAULT_PAGE_SIZE,
+        totalCount,
+        hasMore
+      }
+    })
   } catch (error) {
     console.error('Error fetching posts:', error)
 

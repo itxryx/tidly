@@ -12,19 +12,29 @@ const TopPage: React.FC = () => {
   const [posts, setPosts] = useState<ClientPost[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (page = 1, append = false) => {
     if (!user?.cognito_sub) return
 
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await postApi.getPosts(user.cognito_sub)
+      const result = await postApi.getPosts(user.cognito_sub, page)
 
       if (result.success) {
         const clientPosts = convertApiPostsToClientPosts(result.data.posts)
-        setPosts(clientPosts)
+
+        if (append) {
+          setPosts(prevPosts => [...prevPosts, ...clientPosts])
+        } else {
+          setPosts(clientPosts)
+        }
+
+        setHasMore(result.data.pagination.hasMore)
+        setCurrentPage(result.data.pagination.page)
       } else {
         setError(`Failed to fetch posts: ${result.error.error.message}`)
       }
@@ -33,6 +43,12 @@ const TopPage: React.FC = () => {
       console.error('Error fetching posts:', err)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleLoadMore = () => {
+    if (hasMore && !isLoading) {
+      fetchPosts(currentPage + 1, true)
     }
   }
 
@@ -70,6 +86,8 @@ const TopPage: React.FC = () => {
       <PostList
         posts={posts}
         isLoading={isLoading}
+        hasMore={hasMore}
+        onLoadMore={handleLoadMore}
       />
     </MainLayout>
   )
