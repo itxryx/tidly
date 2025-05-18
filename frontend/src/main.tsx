@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { AuthProvider } from 'react-oidc-context'
+import { WebStorageStateStore } from 'oidc-client-ts'
 import { UserProvider } from './contexts/UserContext'
 import App from './App.tsx'
 import './index.css'
@@ -12,6 +13,7 @@ const cognitoAuthConfig = {
   redirect_uri: AUTH_CONFIG.redirectUri,
   response_type: 'code',
   scope: 'email openid',
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
 createRoot(document.getElementById('root')!).render(
