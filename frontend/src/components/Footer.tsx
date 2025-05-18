@@ -5,7 +5,8 @@ import Button from './Button'
 const Footer: React.FC = () => {
   const auth = useAuth()
 
-  const handleSignOut = () => {
+  const handleSignOut = (e: React.MouseEvent) => {
+    e.preventDefault()
     auth.removeUser()
     const clientId = String(import.meta.env.VITE_COGNITO_CLIENT_ID);
     const logoutUri = String(import.meta.env.VITE_COGNITO_LOGOUT_URI);
