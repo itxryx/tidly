@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         {auth.isAuthenticated && (
           <button
             onClick={handleSignOut}
-            className="text-sm text-white hover:underline"
+            className="text-sm text-white hover:underline cursor-pointer"
           >
             Sign out
           </button>
