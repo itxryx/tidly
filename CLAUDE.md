@@ -135,7 +135,7 @@ backend/
 
 ```typescript
 interface User {
-  id: string;         // ユーザーID
+  id: number;        // ユーザーID
   cognito_sub: string; // Cognito サブジェクトID
   email: string;      // メールアドレス
   created_at: number; // 作成日時（UNIXタイムスタンプ）
@@ -149,8 +149,8 @@ interface User {
 
 ```typescript
 interface Post {
-  id: string;        // 投稿ID
-  user_id: string;   // 作成者のユーザーID
+  id: number;        // 投稿ID
+  user_id: number;   // 作成者のユーザーID
   content: string;   // 投稿内容
   created_at: number; // 作成日時（UNIXタイムスタンプ）
   updated_at: number; // 更新日時（UNIXタイムスタンプ）
@@ -230,11 +230,11 @@ interface Post {
 - 現在のブランチ: develop
 - メインブランチ: main
 - 最近のコミット:
-  - `5c936a4` add prisma, migrations
-  - `bfc2e6b` fix frontend
-  - `8aaa23e` update CLAUDE.md
-  - `a9398aa` add frontend authentication
-  - `7e59214` update CLAUDE.md
+  - `2e5fca6` fix backend
+  - `8327688` fix backend/package.json
+  - `fc3cb2a` fix frontend
+  - `c331400` fix frontend
+  - `2292203` fix backend deploy command
 
 ## 開発ワークフロー
 
@@ -250,7 +250,8 @@ interface Post {
 2. 変更を加える
 3. `npm run test` でテストを実行
 4. `npm run cf-typegen` で必要に応じてCloudflare向けの型を生成
-5. `npm run deploy` でCloudflare Workersにデプロイ
+5. `npm run build` でPrismaクライアントを生成
+6. `npm run deploy` でCloudflare Workersにデプロイ（内部でbuildコマンドも実行）
 
 ## セキュリティ
 
@@ -286,3 +287,5 @@ interface Post {
 
 ### バックエンド
 バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。環境変数API_KEYを設定してデプロイする必要があります。データベースはCloudflare D1を使用し、PrismaのD1アダプターを通じてアクセスします。
+
+デプロイ前にPrismaクライアントの生成を行うことが重要です。`npm run deploy`コマンドは内部で`npm run build`を実行して、最新のPrismaクライアントを生成してからデプロイを行います。この手順を省略すると、Cloudflare Workers上でデータベース接続に問題が発生する可能性があります。
