@@ -19,8 +19,16 @@ export interface Post {
   is_deleted: number;
 }
 
+export interface PaginationInfo {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  hasMore: boolean;
+}
+
 export interface PostsResponse {
   posts: Post[];
+  pagination: PaginationInfo;
 }
 
 export interface CreateUserRequest {
@@ -57,8 +65,8 @@ export const userApi = {
 };
 
 export const postApi = {
-  async getPosts(cognitoSub: string): Promise<ApiResult<PostsResponse>> {
-    return apiClient.get<PostsResponse>(`/posts?sub=${encodeURIComponent(cognitoSub)}`);
+  async getPosts(cognitoSub: string, page: number = 1): Promise<ApiResult<PostsResponse>> {
+    return apiClient.get<PostsResponse>(`/posts?sub=${encodeURIComponent(cognitoSub)}&page=${page}`);
   },
 
   async createPost(data: CreatePostRequest): Promise<ApiResult<Post>> {
