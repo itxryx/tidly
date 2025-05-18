@@ -6,6 +6,7 @@
 
 - 日本語で回答を行うこと
 - コメントは必要最低限で、端的な日本語で記述すること
+- ソースコード内のエラーメッセージやユーザー向けテキストは英語で記述し、テストコードのコメントは日本語を使用すること
 - 指示を受けてから最初に設計を行い、常に保守性を意識したコードを記述すること
 - 使われていないファイルやコードを常に精査して、それらが存在した場合は削除すること
 - type: anyは使用せず、どうしても使用する必要がある場合は許可を得ること
@@ -25,7 +26,7 @@
 
 ### バックエンド
 
-バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。API認証のためのミドルウェアが実装されており、環境変数からAPI_KEYを取得して認証を行います。将来的にはKV、R2、D1データベースなどのCloudflareサービスとの連携も可能です。
+バックエンドはHonoフレームワークを使用したCloudflare Workersアプリケーションとして実装されています。API認証のためのミドルウェアが実装されており、環境変数からAPI_KEYを取得して認証を行います。エラーハンドリングミドルウェアも実装されており、アプリケーション全体で統一されたエラーレスポンスを返します。データベースにはPrismaを使用し、Cloudflare D1データベースと連携しています。ユーザーと投稿のAPIエンドポイントが実装されています。
 
 ## コマンド
 
@@ -56,6 +57,15 @@ cd backend && npm run deploy
 
 # Cloudflare Workers用の型生成
 cd backend && npm run cf-typegen
+
+# テスト実行
+cd backend && npm run test
+
+# テスト（監視モード）
+cd backend && npm run test:watch
+
+# テストカバレッジ
+cd backend && npm run test:coverage
 ```
 
 ## プロジェクト構造
@@ -92,17 +102,63 @@ frontend/
 
 backend/
 ├── src/                  # ソースコード
+│   ├── lib/              # ユーティリティライブラリ
+│   │   ├── config.ts            # 設定管理
+│   │   ├── db.ts                # データベース接続
+│   │   └── error.ts             # エラー処理ユーティリティ
 │   ├── middlewares/      # ミドルウェア
-│   │   └── api-authentication.ts # API認証ミドルウェア
+│   │   ├── api-authentication.ts # API認証ミドルウェア
+│   │   └── error-handler.ts     # エラーハンドリングミドルウェア
+│   ├── routes/           # APIルート
+│   │   ├── posts.ts            # 投稿関連のエンドポイント
+│   │   └── users.ts            # ユーザー関連のエンドポイント
+│   ├── types/            # 型定義
+│   │   ├── bindings.d.ts        # Cloudflare bindings型定義
+│   │   └── index.ts             # 共通型定義
 │   └── index.ts          # アプリケーションのエントリーポイント（Honoフレームワーク）
+├── prisma/               # Prisma ORM設定
+│   └── schema.prisma      # データベーススキーマ定義
+├── migrations/           # データベースマイグレーションファイル
+├── test/                 # テストファイル
+│   ├── lib/              # ライブラリのテスト
+│   ├── routes/           # APIルートのテスト
+│   ├── mock.ts           # モックデータ
+│   ├── setup.ts          # テスト設定
+│   └── utils.ts          # テストユーティリティ
+├── vitest.config.ts      # Vitestテスト設定
 └── wrangler.jsonc        # Cloudflare Wrangler設定
 ```
 
 ## データ構造
 
+### ユーザーデータ (User)
+
+```typescript
+interface User {
+  id: string;         // ユーザーID
+  cognito_sub: string; // Cognito サブジェクトID
+  email: string;      // メールアドレス
+  created_at: number; // 作成日時（UNIXタイムスタンプ）
+  updated_at: number; // 更新日時（UNIXタイムスタンプ）
+}
+```
+
 ### 投稿データ（Post）
 
-フロントエンドのモックデータとして以下の構造の投稿データを使用しています：
+バックエンドで使用するモデル：
+
+```typescript
+interface Post {
+  id: string;        // 投稿ID
+  user_id: string;   // 作成者のユーザーID
+  content: string;   // 投稿内容
+  created_at: number; // 作成日時（UNIXタイムスタンプ）
+  updated_at: number; // 更新日時（UNIXタイムスタンプ）
+  is_deleted: number; // 削除フラグ（0:有効、1:削除済み）
+}
+```
+
+フロントエンドのモックデータ：
 
 ```typescript
 interface Post {
@@ -113,6 +169,18 @@ interface Post {
 ```
 
 `mockData.ts`ファイルには現在空の投稿配列が定義されています。アプリケーションを使用すると、ユーザーが作成した投稿がこの配列に追加されていきます。
+
+## API エンドポイント
+
+### ユーザー関連
+
+- `GET /users?sub={cognito_sub}` - Cognitoサブジェクトからユーザー情報を取得
+- `POST /users` - ユーザーの新規登録・更新
+
+### 投稿関連
+
+- `GET /posts?sub={cognito_sub}` - 特定ユーザーの投稿一覧を取得
+- `POST /posts` - 新しい投稿を作成
 
 ## ルーティング構造
 
@@ -146,6 +214,10 @@ interface Post {
 - TypeScript
 - Cloudflare Workers
 - Wrangler CLI 4.4.0
+- Prisma 6.8.2 (ORM)
+- Prisma Adapter for D1
+- Vitest 3.1.3 (テストフレームワーク)
+- Supertest 7.1.1 (APIテスト)
 
 ### 開発環境
 - Node.js 22.14.0 (volta管理)
@@ -158,11 +230,11 @@ interface Post {
 - 現在のブランチ: develop
 - メインブランチ: main
 - 最近のコミット:
+  - `5c936a4` add prisma, migrations
+  - `bfc2e6b` fix frontend
+  - `8aaa23e` update CLAUDE.md
   - `a9398aa` add frontend authentication
   - `7e59214` update CLAUDE.md
-  - `890c7c0` fix frontend mock
-  - `4d8f610` update CLAUDE.md
-  - `418cdb7` fix frontend mock
 
 ## 開発ワークフロー
 
@@ -176,8 +248,9 @@ interface Post {
 ### バックエンド
 1. `npm run dev` でローカル開発サーバーを起動
 2. 変更を加える
-3. `npm run cf-typegen` で必要に応じてCloudflare向けの型を生成
-4. `npm run deploy` でCloudflare Workersにデプロイ
+3. `npm run test` でテストを実行
+4. `npm run cf-typegen` で必要に応じてCloudflare向けの型を生成
+5. `npm run deploy` でCloudflare Workersにデプロイ
 
 ## セキュリティ
 
@@ -192,6 +265,16 @@ interface Post {
 ### バックエンド
 バックエンドAPIはBearer認証を採用しています。環境変数`API_KEY`に設定された値と一致するトークンをAuthorizationヘッダーで送信する必要があります。認証が失敗した場合は401エラーが返されます。
 
+エラーハンドリングは統一されたフォーマットで行われ、以下のような構造でエラーレスポンスが返されます：
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Error message"
+  }
+}
+```
+
 ## デプロイ
 
 ### フロントエンド
@@ -202,4 +285,4 @@ interface Post {
 - ディレクトリ指定したアセットの配信
 
 ### バックエンド
-バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。環境変数API_KEYを設定してデプロイする必要があります。
+バックエンドはCloudflare Workersにデプロイします。Wranglerを使用したデプロイコマンドが設定されています。環境変数API_KEYを設定してデプロイする必要があります。データベースはCloudflare D1を使用し、PrismaのD1アダプターを通じてアクセスします。
