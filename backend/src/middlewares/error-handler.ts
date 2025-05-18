@@ -14,7 +14,7 @@ export const errorHandler = (): MiddlewareHandler => {
         return c.json(formatErrorResponse(error))
       }
 
-      const errorObj = error as Error & { code?: string, message?: string }
+      const errorObj = error as Error & { code?: string, message?: string, cause?: any }
       const errorMessage = errorObj.message || 'Server error occurred'
       let errorCode: ApiError['code'] = 'SERVER_ERROR'
       let statusCode: StatusCode = 500
@@ -22,11 +22,14 @@ export const errorHandler = (): MiddlewareHandler => {
       if (errorMessage.includes('not found') || errorMessage.includes('No User found')) {
         errorCode = 'USER_NOT_FOUND'
         statusCode = 404
-      }
-
-      if (errorObj.code === 'P2002') {
+      } else if (errorObj.code === 'P2002') {
         errorCode = 'INVALID_PARAMETER'
         statusCode = 400
+      } else if (errorObj.cause?.code === 'D1_ERROR' ||
+          errorObj.message?.includes('database') ||
+          errorObj.message?.includes('Prisma')) {
+        errorCode = 'DATABASE_ERROR'
+        statusCode = 503
       }
 
       const apiError = new ApiError(

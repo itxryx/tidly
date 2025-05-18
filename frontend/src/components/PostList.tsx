@@ -1,9 +1,9 @@
 import React from 'react'
 import PostItem from './PostItem'
-import type { Post } from './PostItem'
+import type { ClientPost } from '../types/post'
 
 interface PostListProps {
-  posts: Post[]
+  posts: ClientPost[]
   isLoading?: boolean
 }
 

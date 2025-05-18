@@ -1,6 +1,5 @@
 import React from 'react'
 import { useAuth } from 'react-oidc-context'
-import Button from './Button'
 
 const Footer: React.FC = () => {
   const auth = useAuth()
@@ -18,7 +17,12 @@ const Footer: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white">&copy; ito ryo</div>
         {auth.isAuthenticated && (
-          <Button onClick={handleSignOut} variant="secondary">Sign out</Button>
+          <button
+            onClick={handleSignOut}
+            className="text-sm text-white hover:underline"
+          >
+            Sign out
+          </button>
         )}
       </div>
     </footer>

@@ -5,6 +5,7 @@ declare global {
     DB: D1Database
     API_KEY: string
     MAX_POST_BYTES: string
+    ALLOWED_ORIGINS: string
   }
 }
 

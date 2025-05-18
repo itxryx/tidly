@@ -1,13 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { AuthProvider } from 'react-oidc-context'
+import { UserProvider } from './contexts/UserContext'
 import App from './App.tsx'
 import './index.css'
+import { AUTH_CONFIG } from './api/config'
 
 const cognitoAuthConfig = {
-  authority: String(import.meta.env.VITE_COGNITO_AUTHORITY),
-  client_id: String(import.meta.env.VITE_COGNITO_CLIENT_ID),
-  redirect_uri: String(import.meta.env.VITE_COGNITO_REDIRECT_URI),
+  authority: AUTH_CONFIG.authority,
+  client_id: AUTH_CONFIG.clientId,
+  redirect_uri: AUTH_CONFIG.redirectUri,
   response_type: 'code',
   scope: 'email openid',
 };
@@ -15,7 +17,9 @@ const cognitoAuthConfig = {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider {...cognitoAuthConfig}>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </AuthProvider>
   </StrictMode>,
 )

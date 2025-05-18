@@ -9,41 +9,38 @@ describe('認証とエラーハンドリング', () => {
   describe('認証', () => {
     it('認証なしでアクセスするとエラーを返すこと', async () => {
       // 認証ヘッダーなしのリクエスト
-      const res = await apiTest.get('/', {
+      const res = await apiTest.get('/v1/users', {
         headers: {} // 認証ヘッダーを省略
       })
-      
+
       // 検証
       expect(res.status).toBe(401)
-      expect(res.body).toEqual({
-        error: 'Invalid or missing authorization'
-      })
+      expect(res.body).toHaveProperty('error')
+      expect(res.body.error).toHaveProperty('message', 'Invalid or missing authorization')
     })
-    
+
     it('間違ったAPIキーでアクセスするとエラーを返すこと', async () => {
       // 間違ったAPIキーでのリクエスト
-      const res = await apiTest.get('/', {
+      const res = await apiTest.get('/v1/users', {
         headers: {
           'Authorization': 'Bearer wrong-api-key'
         }
       })
-      
+
       // 検証
       expect(res.status).toBe(401)
-      expect(res.body).toEqual({
-        error: 'Invalid API key'
-      })
+      expect(res.body).toHaveProperty('error')
+      expect(res.body.error).toHaveProperty('message', 'Invalid API key')
     })
     
     it('正しいAPIキーでアクセスすると成功すること', async () => {
-      // 正しいAPIキーでのリクエスト
+      // 正しいAPIキーでのリクエスト（ルートURLへのリクエスト）
       const res = await apiTest.get('/')
-      
+
       // 検証
       expect(res.status).toBe(200)
-      expect(res.body).not.toEqual({
-        error: 'Invalid API key'
-      })
+      expect(typeof res.body).toBe('string')
+      expect(res.body).toContain('Hello Hono!')
     })
   })
 

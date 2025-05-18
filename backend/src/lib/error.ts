@@ -5,6 +5,7 @@ export type ErrorCode =
   | 'USER_NOT_FOUND'
   | 'CONTENT_TOO_LONG'
   | 'AUTHENTICATION_ERROR'
+  | 'DATABASE_ERROR'
   | 'SERVER_ERROR'
 
 export class ApiError extends Error {

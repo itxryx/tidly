@@ -1,3 +1,3 @@
-import type { Post } from './components/PostItem'
+import type { ClientPost } from './types/post'
 
-export const mockPosts: Post[] = []
+export const mockPosts: ClientPost[] = []

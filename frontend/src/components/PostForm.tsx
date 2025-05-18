@@ -2,48 +2,67 @@ import React, { useState, useEffect, useCallback } from 'react'
 import TextArea from './TextArea'
 import Button from './Button'
 import CircleProgressBar from './CircleProgressBar'
+import { useUser } from '../contexts/UserContext'
+import { postApi } from '../api'
+import type { CreatePostRequest } from '../api'
+import type { ApiPost } from '../types/post'
 
 interface PostFormProps {
-  onSubmit?: (content: string) => void
+  onSubmit?: (post: ApiPost) => void
+  onError?: (message: string) => void
 }
 
-const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
+const PostForm: React.FC<PostFormProps> = ({ onSubmit, onError }) => {
+  const { user } = useUser()
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const submitPost = async () => {
     if (!content.trim()) return
     if (isSubmitting) return
     if (new TextEncoder().encode(content).length >= 200) return
+    if (!user?.cognito_sub) return
 
     setIsSubmitting(true)
+    setError(null)
 
-    setTimeout(() => {
-      onSubmit?.(content)
-      setContent('')
+    try {
+      const postData: CreatePostRequest = {
+        sub: user.cognito_sub,
+        content: content.trim()
+      }
+
+      const result = await postApi.createPost(postData)
+
+      if (result.success) {
+        onSubmit?.(result.data)
+        setContent('')
+      } else {
+        const errorMessage = result.error.error.message || 'Failed to create post'
+        setError(errorMessage)
+        onError?.(errorMessage)
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error occurred while creating post'
+      setError(errorMessage)
+      onError?.(errorMessage)
+    } finally {
       setIsSubmitting(false)
-    }, 500)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    submitPost()
   }
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       e.preventDefault()
-
-      if (!content.trim()) return
-      if (isSubmitting) return
-      if (new TextEncoder().encode(content).length >= 200) return
-
-      setIsSubmitting(true)
-
-      setTimeout(() => {
-        onSubmit?.(content)
-        setContent('')
-        setIsSubmitting(false)
-      }, 500)
+      submitPost()
     }
-  }, [content, isSubmitting, onSubmit])
+  }, [content, isSubmitting, user])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
@@ -61,6 +80,11 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
         maxBytes={200}
         disabled={isSubmitting}
       />
+      {error && (
+        <div className="mt-2 text-amber text-sm">
+          {error}
+        </div>
+      )}
       <div className="mt-2 flex justify-end items-center gap-4">
         <CircleProgressBar
           progress={Math.round((new TextEncoder().encode(content).length / 200) * 100)}
@@ -71,7 +95,7 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
         />
         <Button
           type="submit"
-          disabled={!content.trim() || isSubmitting || new TextEncoder().encode(content).length >= 200}
+          disabled={!content.trim() || isSubmitting || new TextEncoder().encode(content).length >= 200 || !user}
         >
           {isSubmitting ? 'Sending...' : 'Send'}
         </Button>

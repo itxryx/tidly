@@ -1,13 +1,8 @@
 import React from 'react'
-
-export interface Post {
-  id: string
-  content: string
-  createdAt: string
-}
+import type { ClientPost } from '../types/post'
 
 interface PostItemProps {
-  post: Post
+  post: ClientPost
 }
 
 const PostItem: React.FC<PostItemProps> = ({ post }) => {
